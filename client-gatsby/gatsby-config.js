@@ -30,8 +30,8 @@ module.exports = {
     {
       resolve: `gatsby-plugin-react-redux`,
       options: {
-        // [required] - path to your createStore module
-        pathToCreateStoreModule: './src/state/createStore',
+        // [required] - path to your store module
+        pathToCreateStoreModule: './src/state/store',
         // [optional] - options passed to `serialize-javascript`
         // info: https://github.com/yahoo/serialize-javascript#options
         // will be merged with these defaults:

@@ -44,6 +44,8 @@ router.post("/register", (req, res) => {
 // @access Public
 router.post("/login", (req, res) => {
 
+  console.log(req)
+
   // Form validation
   const { errors, isValid } = validateLoginInput(req.body)
 
