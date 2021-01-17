@@ -8,6 +8,10 @@ const UserSchema = new Schema({
     required: true,
     dropDups: true
   },
+  birthday: {
+    type: String,
+    required: true,
+  }
 })
 
 module.exports = User = mongoose.model("users", UserSchema)
