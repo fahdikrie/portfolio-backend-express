@@ -7,27 +7,21 @@ const validateRegisterInput = require("../../validation/register")
 const validateLoginInput = require("../../validation/login")
 const User = require("../../models/User")
 
-// @route POST api/users/register
-// @desc Register user
-// @access Public
 router.post("/register", (req, res) => {
-
-  // Form validation
   const { errors, isValid } = validateRegisterInput(req.body);
 
-  // Check validation
   if (!isValid) {
     return res.status(400).json(errors)
   }
 
   User.findOne({ name: req.body.name }).then(user => {
 
-    // Check if user exists
     if (user) {
-      return res.status(400).json({ name: "Name already exists" })
+      return res.status(400).json({ name: "User already exists" })
     } else {
       const newUser = new User({
-        name: req.body.name,
+        name: req.body.name.toLowerCase(),
+        birthday: req.body.birthday
       })
 
       newUser
@@ -36,59 +30,52 @@ router.post("/register", (req, res) => {
         .catch(err => console.log(err))
     }
   })
-
 })
 
-// @route POST api/users/login
-// @desc Login user and return JWT token
-// @access Public
 router.post("/login", (req, res) => {
-
-  console.log(req)
-
-  // Form validation
   const { errors, isValid } = validateLoginInput(req.body)
 
-  // Check validation
   if (!isValid) {
     return res.status(400).json(errors)
   }
 
-  const name = req.body.name
+  const name = req.body.name.toLowerCase()
+  const birthday = req.body.birthday
 
-  // Find user by name
   User.findOne({ name }).then(user => {
 
-    // Check if user exists
     if (!user) {
       return res.status(404).json(
-        { namenotfound: "Aw shoot! apparently you're not (yet) my special friend :(" }
+        { namenotfound: "Aw shoot! apparently you are not (yet) my special friend :(" }
       )
     }
 
-    // User matched
-    // Create JWT Payload
-    const payload = {
-      id: user.id,
-      name: user.name
-    }
-
-    // Sign token
-    jwt.sign(
-      payload,
-      keys.secretOrKey,
-      {
-        expiresIn: 3600 // an hour in seconds
-      },
-      (err, token) => {
-        res.json({
-          success: true,
-          token: "Bearer " + token
-        })
+    if (birthday ===  user.birthday) {
+      const payload = {
+        id: user.id,
+        name: user.name
       }
-    )
-  })
 
+      jwt.sign(
+        payload,
+        keys.secretOrKey,
+        {
+          expiresIn: 3600 // an hour in seconds
+        },
+
+        (err, token) => {
+          res.json({
+            success: true,
+            token: "Bearer " + token
+          })
+        }
+      )
+    } else {
+      return res.status(400).json(
+        { birthdayincorrect: "Either that isn't your birthday or you typed it on a wrong format (format is dd/mm/yyyy) :/" }
+      )
+    }
+  })
 })
 
 module.exports = router
