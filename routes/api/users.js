@@ -69,6 +69,8 @@ router.post("/login", (req, res) => {
 
         (err, token) => {
           res.json({
+            name: req.body.name,
+            birthday: req.body.birthday,
             success: true,
             token: "Bearer " + token
           })

@@ -18,6 +18,7 @@ const loginReducer = (state = initialState, action) => {
     case type.USER_LOGIN_SUCCESS:
       return {
         ...state,
+        error: {},
         user: action.payload,
         isLoading: false,
         isAuthenticated: true

@@ -1,10 +1,13 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { login } from '../redux/actions'
 
 
 const Home = () => {
   const dispatch = useDispatch()
+  const state = useSelector((state) => state.login)
+
+  console.log(state)
 
   const [input, setInput] = useState({
     name:"",
@@ -36,6 +39,15 @@ const Home = () => {
 
   return (
   <>
+    {state.isAuthenticated
+      ?
+       <>{state.user.name}</>
+      :
+        <></>
+    }
+
+    <br/>
+
       <label>
         Nama
       </label> <br/>
