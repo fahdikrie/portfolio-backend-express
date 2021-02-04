@@ -2,7 +2,7 @@ import axios from 'axios'
 import * as type from './types'
 import {
   LOGIN_URL
-} from '../public/api'
+} from '../middleware/api'
 
 export const login = (user) => {
   return (dispatch) => {
@@ -21,9 +21,10 @@ export const login = (user) => {
       .catch(err => {
         console.log("error action!", err)
         console.log(Object.keys(err))
-        console.log(err.response)
+        console.log(err.response.data)
+
         dispatch({
-          payload: err,
+          payload: err.response.data,
           type: type.USER_LOGIN_FAILED
         })
       })
