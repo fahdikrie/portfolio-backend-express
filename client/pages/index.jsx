@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { login } from '../redux/actions'
+import cookie from 'js-cookie';
 
 
 const Home = () => {
   const dispatch = useDispatch()
   const state = useSelector((state) => state.login)
+  const kuki = cookie.get("token")
+
+  console.log(kuki)
 
   useEffect(() => {
     console.log(state)

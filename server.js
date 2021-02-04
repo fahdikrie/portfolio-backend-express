@@ -6,6 +6,9 @@ const cors = require('cors')
 
 const users = require("./routes/api/users")
 
+const dotenv = require('dotenv')
+dotenv.config()
+
 const app = express()
 app.use(cors())
 
