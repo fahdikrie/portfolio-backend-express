@@ -3,43 +3,65 @@ import { useDispatch } from 'react-redux'
 import { login } from '../redux/actions'
 
 
-export default function Home() {
+const Home = () => {
   const dispatch = useDispatch()
 
   const [input, setInput] = useState({
     name:"",
+    birthday:"",
     errors:{}
   })
 
-  const handleInput = (e) => {
+  const handleNameInput = (e) => {
     setInput({
       ...input,
       name: e.target.value
     })
   }
 
+  const handleBirthdayInput = (e) => {
+    setInput({
+      ...input,
+      birthday: e.target.value
+    })
+  }
+
   const handleSubmit = () => {
     console.log("submit", input.name)
     dispatch(login({
-      name: input.name
+      name: input.name,
+      birthday: input.birthday
     }))
   }
 
   return (
-    <>
-      {/* <form
-        onSubmit={() => handleSubmit()}
-      > */}
-        <input
-          onChange={e => handleInput(e)}
-        />
-        <button
-          type="submit"
-          onClick={() => handleSubmit()}
-        >
-          Login
-        </button>
-      {/* </form> */}
+  <>
+      <label>
+        Nama
+      </label> <br/>
+      <input
+        onChange={e => handleNameInput(e)}
+      /> <br/><br/>
+
+      <label>
+        Birthday
+      </label> <br/>
+      <input
+        onChange={e => handleBirthdayInput(e)}
+      /> <br/> <br/>
+
+      <p>
+        { input.errors?.name }
+      </p>
+
+      <button
+        type="submit"
+        onClick={() => handleSubmit()}
+      >
+        Login
+      </button> <br/>
     </>
   )
 }
+
+export default Home

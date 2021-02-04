@@ -17,7 +17,9 @@ router.post("/register", (req, res) => {
   User.findOne({ name: req.body.name }).then(user => {
 
     if (user) {
-      return res.status(400).json({ name: "User already exists" })
+      return res.status(300).json({
+        name: "User already exists"
+      })
     } else {
       const newUser = new User({
         name: req.body.name.toLowerCase(),
@@ -36,7 +38,7 @@ router.post("/login", (req, res) => {
   const { errors, isValid } = validateLoginInput(req.body)
 
   if (!isValid) {
-    return res.status(400).json(errors)
+    return res.status(300).json(errors)
   }
 
   const name = req.body.name.toLowerCase()
@@ -45,8 +47,10 @@ router.post("/login", (req, res) => {
   User.findOne({ name }).then(user => {
 
     if (!user) {
-      return res.status(404).json(
-        { namenotfound: "Aw shoot! apparently you are not (yet) my special friend :(" }
+      return res.status(300).json(
+        {
+          name: "Aw shoot! apparently you are not (yet) my special friend :("
+        }
       )
     }
 
@@ -71,8 +75,10 @@ router.post("/login", (req, res) => {
         }
       )
     } else {
-      return res.status(400).json(
-        { birthdayincorrect: "Either that isn't your birthday or you typed it on a wrong format (format is dd/mm/yyyy) :/" }
+      return res.status(300).json(
+        {
+          birthday: "Either that isn't your birthday or you typed it on a wrong format (format is dd/mm/yyyy) :/"
+        }
       )
     }
   })

@@ -20,6 +20,8 @@ export const login = (user) => {
       })
       .catch(err => {
         console.log("error action!", err)
+        console.log(Object.keys(err))
+        console.log(err.response)
         dispatch({
           payload: err,
           type: type.USER_LOGIN_FAILED

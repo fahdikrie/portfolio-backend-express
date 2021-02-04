@@ -11,8 +11,8 @@ module.exports = function validateLoginInput(data) {
     errors.name = "Enter your name here and see if you're my special friend <3"
   }
 
-  if (Validator.isEmpty(data.name)) {
-    errors.name = "Enter your birthday here and see if you're my special friend <3"
+  if (Validator.isEmpty(data.birthday)) {
+    errors.birthday = "Enter your birthday here and see if you're my special friend <3"
   }
 
   return {
