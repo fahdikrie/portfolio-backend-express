@@ -84,8 +84,6 @@ export default function Home({ allPosts: { edges }, preview }) {
   const posts = []
 
   if (!user.isAuthenticated) {
-    const filteredPosts = []
-
     edges.forEach(el => {
       el.node.categories.edges.forEach(edge => {
         if (edge.node.id != "dGVybToz" && !posts.includes(el.node)) {
@@ -93,16 +91,10 @@ export default function Home({ allPosts: { edges }, preview }) {
         }
       })
     })
-
-    console.log("filtered", filteredPosts)
   } else {
-    const unfilteredPosts = []
-
     edges.forEach(el => {
       posts.push(el.node)
     })
-
-    console.log("unfiltered", unfilteredPosts)
   }
 
   console.log(posts)
@@ -161,8 +153,10 @@ export default function Home({ allPosts: { edges }, preview }) {
       })}
 
       { posts.length !== 0 
-        ? posts.map(el => (
-          <p>{el.title}</p>
+        ? posts.map((el, i) => (
+          <div key={i}>
+            <p>{el.title}</p>
+          </div>
         ))
         : ""
       }
