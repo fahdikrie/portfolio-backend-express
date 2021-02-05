@@ -1,32 +1,42 @@
 import axios from 'axios'
+import jwt_decode from 'jwt-decode'
+
 import * as type from './types'
 import {
+  setToken,
+  setAxiosHeader
+} from '../utils/auth'
+import {
   LOGIN_URL
-} from '../middleware/api'
+} from '../utils/api'
+
 
 export const login = (user) => {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     dispatch({ type: type.USER_LOGIN })
     axios
       .post(LOGIN_URL, user)
       .then(res => {
-        console.log("action!")
-        console.log(res)
+        setToken(res.data.token)
+        setAxiosHeader(res.data.token)
+
+        const decoded = jwt_decode(res.data.token)
+        console.log(decoded)
 
         dispatch({
-          payload: res.data,
+          payload: decoded,
           type: type.USER_LOGIN_SUCCESS
         })
+
+        return true
       })
       .catch(err => {
-        console.log("error action!", err)
-        console.log(Object.keys(err))
-        console.log(err.response.data)
-
-        dispatch({
-          payload: err.response.data,
-          type: type.USER_LOGIN_FAILED
-        })
+        if (err.response) {
+          dispatch({
+            payload: err.response.data,
+            type: type.USER_LOGIN_FAILED
+          })
+        }
       })
   }
 }

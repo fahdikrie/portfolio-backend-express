@@ -1,83 +1,123 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { useRouter } from 'next/router'
+import jwt_decode from 'jwt-decode'
+
 import { login } from '../redux/actions'
-import cookie from 'js-cookie';
 
 
 const Home = () => {
   const dispatch = useDispatch()
-  const state = useSelector((state) => state.login)
-  const kuki = cookie.get("token")
+  const router = useRouter()
 
-  console.log(kuki)
-
-  useEffect(() => {
-    console.log(state)
-  }, [state])
-
-  const [input, setInput] = useState({
+  const [formData, setFormData] = useState({
     name:"",
     birthday:"",
-    errors:{}
   })
 
-  const handleNameInput = (e) => {
-    setInput({
-      ...input,
-      name: e.target.value
+  const onChangeHandler = (e) => {
+    const { name, value } = e.currentTarget
+    setFormData({
+      ...formData,
+      [name]: value
     })
   }
 
-  const handleBirthdayInput = (e) => {
-    setInput({
-      ...input,
-      birthday: e.target.value
-    })
+  const [user, setUser] = useState({
+    name:"",
+    errors:{},
+    isLoading:false,
+    isAuthenticated:false
+  })
+
+  useEffect(() => {
+    const token = localStorage.getItem('jwt')
+    if (token) {
+      console.log(token)
+      const decoded = jwt_decode(token)
+      setUser({
+        ...user,
+        name: decoded.name,
+        isLoading:false,
+        isAuthenticated:true
+      })
+    }
+  }, [])
+
+  const loginState = useSelector((state) => state.login)
+  useEffect(() => {
+    if (localStorage.getItem('jwt') == null) {
+      setUser({
+        ...user,
+        errors:loginState.errors,
+        isLoading:loginState.isLoading,
+        isAuthenticated:login.isAuthenticated,
+      })
+    }
+  }, [loginState])
+
+  const handleLogin = () => {
+    dispatch(login(formData))
   }
 
-  const handleSubmit = () => {
-    console.log("submit", input.name)
-    dispatch(login({
-      name: input.name,
-      birthday: input.birthday
-    }))
+  const handleLogout = () => {
+    if (localStorage.getItem('jwt')) {
+      localStorage.removeItem('jwt')
+    }
+
+    router.reload()
   }
 
   return (
-  <>
-    {state.isAuthenticated
-      ?
-       <>{state.user.name}</>
-      :
-        <></>
-    }
+    <>
+      {user.name !== "" || user.isAuthenticated
+        ?
+          <>
+            <h1>{user.name}</h1>
+            <button
+              type="submit"
+              onClick={() => handleLogout()}
+            >
+              Logout
+            </button>
+          </>
+        :
+          <>
+            <input
+              name="name"
+              onChange={(e) => onChangeHandler(e)}
+            /> <br/>
 
-    <br/>
+            {user.errors !== {}
+              ? <p>{user.errors?.name}</p>
+              : ""
+            }
 
-      <label>
-        Nama
-      </label> <br/>
-      <input
-        onChange={e => handleNameInput(e)}
-      /> <br/><br/>
+            <input
+              name="birthday"
+              onChange={(e) => onChangeHandler(e)}
+              /> <br/>
 
-      <label>
-        Birthday
-      </label> <br/>
-      <input
-        onChange={e => handleBirthdayInput(e)}
-      /> <br/> <br/>
+            {user.errors !== {}
+              ? <p>{user.errors?.birthday}</p>
+              : ""
+            }
 
-      <p>
-        { input.errors?.name }
-      </p>
+            {user.errors !== {}
+              ? <p>{user.errors?.usernotfound}</p>
+              : ""
+            }
 
-      <button
-        type="submit"
-        onClick={() => handleSubmit()}
-      >
-        Login
-      </button> <br/>
+            <button
+              type="submit"
+              onClick={() => handleLogin()}
+            >
+              Login
+            </button>
+          </>
+      }
+
+      <br/>
     </>
   )
 }

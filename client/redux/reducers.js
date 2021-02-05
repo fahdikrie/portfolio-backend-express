@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux'
-import { setCookie } from '../middleware/auth'
+import {  } from '../utils/auth'
 import * as type from './types'
 
 const initialState = {
   user: {},
-  error: null,
+  errors: null,
   isLoading: false,
   isAuthenticated: false,
 }
@@ -17,10 +17,9 @@ const loginReducer = (state = initialState, action) => {
         isLoading: true,
       }
     case type.USER_LOGIN_SUCCESS:
-      setCookie(action.payload.token)
       return {
         ...state,
-        error: {},
+        errors: {},
         user: action.payload,
         isLoading: false,
         isAuthenticated: true
@@ -28,9 +27,9 @@ const loginReducer = (state = initialState, action) => {
       case type.USER_LOGIN_FAILED:
         return {
         ...state,
-        error: action.payload,
+        errors: action.payload,
         isLoading: false,
-        isAuthenticated: true
+        isAuthenticated: false
       }
     default:
       return state

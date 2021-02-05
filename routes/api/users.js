@@ -49,7 +49,7 @@ router.post("/login", (req, res) => {
     if (!user) {
       return res.status(300).json(
         {
-          name: "Aw shoot! apparently you are not (yet) my special friend :("
+          usernotfound: "Aw shoot! apparently you are not (yet) my special friend :("
         }
       )
     }
@@ -69,8 +69,6 @@ router.post("/login", (req, res) => {
 
         (err, token) => {
           res.json({
-            name: req.body.name,
-            birthday: req.body.birthday,
             success: true,
             token: "Bearer " + token
           })
