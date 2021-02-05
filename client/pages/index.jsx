@@ -51,14 +51,22 @@ const Home = () => {
         ...user,
         errors:loginState.errors,
         isLoading:loginState.isLoading,
-        isAuthenticated:login.isAuthenticated,
+        isAuthenticated:loginState.isAuthenticated,
       })
     }
   }, [loginState])
 
   const handleLogin = () => {
     dispatch(login(formData))
+      .then((res) => (res.data.success ? router.reload() : null))
+      .catch((err) => console.log(err.response.data))
   }
+
+  useEffect(() => {
+    if (localStorage.getItem('jwt') == null && loginState.isAuthenticated) {
+      router.reload()
+    }
+  }, [loginState.isAuthenticated])
 
   const handleLogout = () => {
     if (localStorage.getItem('jwt')) {

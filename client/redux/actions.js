@@ -1,5 +1,6 @@
 import axios from 'axios'
 import jwt_decode from 'jwt-decode'
+import { useRouter } from 'next/router'
 
 import * as type from './types'
 import {
@@ -12,8 +13,9 @@ import {
 
 
 export const login = (user) => {
-  return (dispatch, getState) => {
+  return (dispatch) => {
     dispatch({ type: type.USER_LOGIN })
+    return new Promise((resolve, reject) => {
     axios
       .post(LOGIN_URL, user)
       .then(res => {
@@ -28,7 +30,7 @@ export const login = (user) => {
           type: type.USER_LOGIN_SUCCESS
         })
 
-        return true
+        resolve(res)
       })
       .catch(err => {
         if (err.response) {
@@ -37,6 +39,9 @@ export const login = (user) => {
             type: type.USER_LOGIN_FAILED
           })
         }
+
+        reject(err)
       })
+    })
   }
 }
