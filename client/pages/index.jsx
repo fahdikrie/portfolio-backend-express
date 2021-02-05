@@ -4,9 +4,13 @@ import { useRouter } from 'next/router'
 import jwt_decode from 'jwt-decode'
 
 import { login } from '../redux/actions'
+import { getAllPosts, getAllNonPrivatePosts } from '../lib/api'
 
 
-const Home = () => {
+export default function Home({ allPosts: { edges }, preview }) {
+  /**
+   * Auth Section
+   */
   const dispatch = useDispatch()
   const router = useRouter()
 
@@ -71,6 +75,38 @@ const Home = () => {
     router.reload()
   }
 
+  /**
+   * Wordpress Section
+   */
+  const heroPost = edges[0]?.node
+  const morePosts = edges.slice(1)
+
+  const posts = []
+
+  if (!user.isAuthenticated) {
+    const filteredPosts = []
+
+    edges.forEach(el => {
+      el.node.categories.edges.forEach(edge => {
+        if (edge.node.id != "dGVybToz" && !posts.includes(el.node)) {
+          posts.push(el.node)
+        }
+      })
+    })
+
+    console.log("filtered", filteredPosts)
+  } else {
+    const unfilteredPosts = []
+
+    edges.forEach(el => {
+      posts.push(el.node)
+    })
+
+    console.log("unfiltered", unfilteredPosts)
+  }
+
+  console.log(posts)
+
   return (
     <>
       {user.name !== "" || user.isAuthenticated
@@ -120,9 +156,25 @@ const Home = () => {
           </>
       }
 
+      {posts.map(el => {
+        <p>el.title</p>
+      })}
+
+      { posts.length !== 0 
+        ? posts.map(el => (
+          <p>{el.title}</p>
+        ))
+        : ""
+      }
+
       <br/>
     </>
   )
 }
 
-export default Home
+export async function getServerSideProps({ preview = false }) {
+  const posts = await getAllPosts(preview)
+  return {
+    props: { allPosts: posts, preview },
+  }
+}
