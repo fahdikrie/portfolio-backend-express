@@ -73,7 +73,7 @@ const Home = () => {
 
   return (
     <>
-      {user.isAuthenticated
+      {user.name !== "" || user.isAuthenticated
         ?
           <>
             <h1>{user.name}</h1>
