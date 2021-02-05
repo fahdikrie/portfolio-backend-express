@@ -30,6 +30,7 @@ const Home = () => {
     isAuthenticated:false
   })
 
+  const loginState = useSelector((state) => state.login)
   useEffect(() => {
     const token = localStorage.getItem('jwt')
     if (token) {
@@ -41,12 +42,7 @@ const Home = () => {
         isLoading:false,
         isAuthenticated:true
       })
-    }
-  }, [])
-
-  const loginState = useSelector((state) => state.login)
-  useEffect(() => {
-    if (localStorage.getItem('jwt') == null) {
+    } else {
       setUser({
         ...user,
         errors:loginState.errors,
@@ -59,26 +55,25 @@ const Home = () => {
   const handleLogin = () => {
     dispatch(login(formData))
       .then((res) => (res.data.success ? router.reload() : null))
-      .catch((err) => console.log(err.response.data))
+      .catch(
+        (err) => {
+          setUser({
+            ...user,
+            errors: err.response.data
+          })
+        })
   }
-
-  useEffect(() => {
-    if (localStorage.getItem('jwt') == null && loginState.isAuthenticated) {
-      router.reload()
-    }
-  }, [loginState.isAuthenticated])
 
   const handleLogout = () => {
     if (localStorage.getItem('jwt')) {
       localStorage.removeItem('jwt')
     }
-
     router.reload()
   }
 
   return (
     <>
-      {user.name !== "" || user.isAuthenticated
+      {user.isAuthenticated
         ?
           <>
             <h1>{user.name}</h1>
