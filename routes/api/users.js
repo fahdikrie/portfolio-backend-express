@@ -46,7 +46,13 @@ router.post("/login", (req, res) => {
 
   User.findOne({ name }).then(user => {
 
-    if (!user) {
+    if (name === "fahdii ajmalal fikrie") {
+      return res.status(300).json(
+        {
+          usernotfound: "Well... i cannot be my own best friend can i? :D"
+        }
+      )
+    } else if (!user) {
       return res.status(300).json(
         {
           usernotfound: "Aw shoot! apparently you are not (yet) my special friend :("
@@ -77,7 +83,7 @@ router.post("/login", (req, res) => {
     } else {
       return res.status(300).json(
         {
-          birthday: "Either that isn't your birthday or you typed it on a wrong format (format is dd/mm/yyyy) :/"
+          birthday: "Either that isn't your birthday or you typed it on a wrong format (format is dd/mm/yyyy)"
         }
       )
     }
