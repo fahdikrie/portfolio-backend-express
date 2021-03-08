@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/router'
 import jwt_decode from 'jwt-decode'
+import parse from 'html-react-parser'
 
 import { login } from '../redux/actions'
 import { getAllPosts, getAllNonPrivatePosts } from '../lib/api'
@@ -88,7 +89,8 @@ export default function Home({ allPosts: { edges }, preview }) {
       if (!el.node.categories.edges.some(edge => edge.node.id === "dGVybToz") &&
           !posts.includes(el.node)) {
             posts.push(el.node)
-      }
+          }
+      console.log(el.node)
     })
   } else {
     edges.forEach(el => {
@@ -145,14 +147,18 @@ export default function Home({ allPosts: { edges }, preview }) {
           </>
       }
 
-      {posts.map(el => {
-        <p>el.title</p>
-      })}
+      {/* {posts.map(el => {
+          <>
+            <p>el.title</p>
+            <div dangerouslySetInnerHTML={el.excerpts}></div>
+          </>
+      })} */}
 
       { posts.length !== 0 
         ? posts.map((el, i) => (
           <div key={i}>
-            <p>{el.title}</p>
+            <h3>{el.title}</h3>
+            {parse(el.excerpt)}
           </div>
         ))
         : ""
