@@ -147,13 +147,6 @@ export default function Home({ allPosts: { edges }, preview }) {
           </>
       }
 
-      {/* {posts.map(el => {
-          <>
-            <p>el.title</p>
-            <div dangerouslySetInnerHTML={el.excerpts}></div>
-          </>
-      })} */}
-
       { posts.length !== 0 
         ? posts.map((el, i) => (
           <div key={i}>
