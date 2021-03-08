@@ -21,9 +21,7 @@ export const login = (user) => {
       .then(res => {
         setToken(res.data.token)
         setAxiosHeader(res.data.token)
-
         const decoded = jwt_decode(res.data.token)
-        console.log(decoded)
 
         dispatch({
           payload: decoded,

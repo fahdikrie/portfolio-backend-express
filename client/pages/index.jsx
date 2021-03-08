@@ -38,7 +38,6 @@ export default function Home({ allPosts: { edges }, preview }) {
   useEffect(() => {
     const token = localStorage.getItem('jwt')
     if (token) {
-      console.log(token)
       const decoded = jwt_decode(token)
       setUser({
         ...user,
@@ -85,19 +84,17 @@ export default function Home({ allPosts: { edges }, preview }) {
 
   if (!user.isAuthenticated) {
     edges.forEach(el => {
-      el.node.categories.edges.forEach(edge => {
-        if (edge.node.id != "dGVybToz" && !posts.includes(el.node)) {
-          posts.push(el.node)
-        }
-      })
+      // Display posts that aren't categorized as private
+      if (!el.node.categories.edges.some(edge => edge.node.id === "dGVybToz") &&
+          !posts.includes(el.node)) {
+            posts.push(el.node)
+      }
     })
   } else {
     edges.forEach(el => {
       posts.push(el.node)
     })
   }
-
-  console.log(posts)
 
   return (
     <>
