@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 import jwt_decode from 'jwt-decode'
 import parse from 'html-react-parser'
@@ -36,6 +37,9 @@ export default function Home({ allPosts: { edges }, preview }) {
   })
 
   const loginState = useSelector((state) => state.login)
+
+  console.log(useSelector((state) => state))
+
   useEffect(() => {
     const token = localStorage.getItem('jwt')
     if (token) {
@@ -89,8 +93,7 @@ export default function Home({ allPosts: { edges }, preview }) {
       if (!el.node.categories.edges.some(edge => edge.node.id === "dGVybToz") &&
           !posts.includes(el.node)) {
             posts.push(el.node)
-          }
-      console.log(el.node)
+      }
     })
   } else {
     edges.forEach(el => {
@@ -162,8 +165,8 @@ export default function Home({ allPosts: { edges }, preview }) {
   )
 }
 
-export async function getServerSideProps({ preview = false }) {
-  const posts = await getAllPosts(preview)
+export const getServerSideProps: GetServerSideProps = async ({ preview = false }) => {
+  const posts = await getAllPosts();
   return {
     props: { allPosts: posts, preview },
   }
